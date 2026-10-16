@@ -3,6 +3,7 @@
   "displayName": "Markdown Kanban",
   "description": "Turn a checkbox section of a markdown file into a kanban board.",
   "version": "0.0.1",
+  "license": "MIT",
   "publisher": "local",
   "engines": { "vscode": "^1.80.0" },
   "main": "./extension.js",
