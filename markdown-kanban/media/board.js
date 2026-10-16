@@ -33,6 +33,12 @@ function renderCard(card) {
     const body = document.createElement('div');
     body.hidden = collapsed.has(card.text);
     card.subtasks.forEach(s => body.append(subtaskBox(s)));
+    const details = card.details.map(text => {
+        const detail = document.createElement('div');
+        detail.className = 'detail';
+        detail.textContent = text;
+        return detail;
+    });
 
     if (card.subtasks.length) {
         const toggle = document.createElement('span');
@@ -52,7 +58,7 @@ function renderCard(card) {
     } else {
         title.textContent = card.text;
     }
-    el.append(title, body);
+    el.append(title, ...details, body);
     return el;
 }
 

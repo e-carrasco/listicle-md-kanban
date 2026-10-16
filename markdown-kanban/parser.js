@@ -1,6 +1,8 @@
 const HEADING = /^##\s+(.*?)\s*#*\s*$/;
 const CHECKBOX = /^(\s*)[-*+]\s+\[([ xX\/!])\]\s+(.*)$/;
 
+const NOTE = /^(\s*)[-*+]\s+(?!\[[ xX\/!]\]\s)(.+)$/;
+
 function listSections(lines) {
     const out = [];
     lines.forEach((l, i) => {
@@ -20,12 +22,18 @@ function parseSection(lines, headingLine) {
         const line = lines[i];
         if (/^#{1,2}\s/.test(line)) break;
         const m = CHECKBOX.exec(line);
-        if (!m) continue;
+        if (!m) {
+            const note = NOTE.exec(line);
+            if (note && card && note[1].replace(/\t/g, '    ').length > baseIndent) {
+                card.details.push(note[2].trim());
+            }
+            continue;
+        }
         const indent = m[1].replace(/\t/g, '    ').length;
         if (baseIndent === null) baseIndent = indent;
         const item = { line: i, text: m[3].trim(), checked: m[2] === 'x' || m[2] === 'X', doing: m[2] === '/', blocked: m[2] === '!' };
         if (indent <= baseIndent) {
-            card = { ...item, subtasks: [] };
+            card = { ...item, subtasks: [], details: [] };
             cards.push(card);
         } else if (card) {
             card.subtasks.push(item);
