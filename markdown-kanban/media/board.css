@@ -1,0 +1,73 @@
+body {
+    font-family: var(--vscode-font-family);
+    color: var(--vscode-foreground);
+    padding: 8px;
+}
+#toolbar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+#toolbar button {
+  background: var(--vscode-button-secondaryBackground);
+  color: var(--vscode-button-secondaryForeground);
+  border: none;
+  border-radius: 2px;
+  padding: 4px 10px;
+  cursor: pointer;
+}
+#toolbar button:hover {
+  background: var(--vscode-button-secondaryHoverBackground);
+}
+#board {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+}
+.col {
+    flex: 1;
+    background: var(--vscode-sideBar-background);
+    border-radius: 6px;
+    padding: 8px;
+    min-height: 200px;
+}
+.col h2 {
+    font-size: 13px;
+    text-transform: uppercase;
+    margin: 0 0 8px;
+}
+.col.over {
+    outline: 2px dashed var(--vscode-focusBorder);
+}
+.card {
+    background: var(--vscode-editor-background);
+    border: 1px solid var(--vscode-panel-border);
+    border-radius: 4px;
+    padding: 8px;
+    margin-bottom: 8px;
+    cursor: grab;
+}
+.card.dragging {
+    opacity: .4;
+}
+.card .t {
+    font-weight: 600;
+}
+.done .t {
+    text-decoration: line-through;
+    opacity: .7;
+}
+.tog {
+    cursor: pointer;
+    display: inline-block;
+    width: 1.2em;
+    user-select: none;
+}
+.cnt {
+    font-weight: 400;
+    opacity: .7;
+}
+.sub {
+    margin: 4px 0 0 4px;
+    display: block;
+}
