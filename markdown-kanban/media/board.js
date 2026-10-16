@@ -30,6 +30,10 @@ function renderCard(card) {
 
     const title = document.createElement('div');
     title.className = 't';
+    const badge = card.priority && Object.assign(document.createElement('span'), {
+        className: 'badge ' + card.priority,
+        textContent: card.priority,
+    });
     const body = document.createElement('div');
     body.hidden = collapsed.has(card.text);
     card.subtasks.forEach(s => body.append(subtaskBox(s)));
@@ -58,6 +62,7 @@ function renderCard(card) {
     } else {
         title.textContent = card.text;
     }
+    if (badge) title.append(badge);
     el.append(title, ...details, body);
     return el;
 }
@@ -96,7 +101,9 @@ function renderBoard() {
         heading.textContent = titles[id];
         col.append(heading);
     }
-    for (const card of cards) {
+    const rank = { high: 0, med: 1, low: 2 };
+    const sorted = [...cards].sort((a, b) => (rank[a.priority] ?? 3) - (rank[b.priority] ?? 3));
+    for (const card of sorted) {
         document.getElementById(card.column).append(renderCard(card));
     }
 }

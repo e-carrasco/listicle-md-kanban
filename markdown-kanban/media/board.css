@@ -72,6 +72,18 @@ body {
     font-size: 12px;
     opacity: .8;
 }
+.badge {
+    float: right;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    border-radius: 8px;
+    padding: 1px 7px;
+    color: #fff;
+}
+.badge.high { background: #c0392b; }
+.badge.med { background: #b9770e; }
+.badge.low { background: #2e7d32; }
 .sub {
     margin: 4px 0 0 4px;
     display: block;
