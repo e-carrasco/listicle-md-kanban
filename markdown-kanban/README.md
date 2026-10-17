@@ -37,4 +37,4 @@ Turn a checkbox section of a markdown file into a kanban board inside VS Code.
 
 ## License
 
-[MIT](LICENSE)
+MIT (see the LICENSE file)
