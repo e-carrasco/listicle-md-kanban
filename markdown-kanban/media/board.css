@@ -4,17 +4,17 @@ body {
     padding: 8px;
 }
 #toolbar {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 8px;
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
 }
 #toolbar button {
-  background: var(--vscode-button-secondaryBackground);
-  color: var(--vscode-button-secondaryForeground);
-  border: none;
-  border-radius: 2px;
-  padding: 4px 10px;
-  cursor: pointer;
+    background: var(--vscode-button-secondaryBackground);
+    color: var(--vscode-button-secondaryForeground);
+    border: none;
+    border-radius: 2px;
+    padding: 4px 10px;
+    cursor: pointer;
 }
 #toolbar button:hover {
   background: var(--vscode-button-secondaryHoverBackground);

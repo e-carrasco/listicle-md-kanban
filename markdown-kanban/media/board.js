@@ -16,16 +16,37 @@ function subtaskBox(item) {
     return label;
 }
 
+function startDrag(event, card, element) {
+    dragged = card;
+    element.classList.add('dragging');
+    event.dataTransfer.effectAllowed = 'move';
+    event.dataTransfer.setData('text/plain', String(card.line));
+}
+
+function toggleSubtasks(card, body, toggle) {
+    body.hidden = !body.hidden;
+    toggle.textContent = body.hidden ? '▸' : '▾';
+    if (body.hidden) collapsed.add(card.text);
+    else collapsed.delete(card.text);
+}
+
+function renderSubtaskSection(card, body, title) {
+    const toggle = document.createElement('span');
+    toggle.className = 'tog';
+    toggle.textContent = body.hidden ? '▸' : '▾';
+    toggle.onclick = () => toggleSubtasks(card, body, toggle);
+    const doneCount = card.subtasks.filter(s => s.checked).length;
+    const count = document.createElement('span');
+    count.className = 'cnt';
+    count.textContent = ` (${doneCount}/${card.subtasks.length})`;
+    title.append(toggle, document.createTextNode(card.text), count);
+}
+
 function renderCard(card) {
     const el = document.createElement('div');
     el.className = 'card ' + card.column;
     el.draggable = true;
-    el.ondragstart = e => {
-        dragged = card;
-        el.classList.add('dragging');
-        e.dataTransfer.effectAllowed = 'move';
-        e.dataTransfer.setData('text/plain', String(card.line));
-    };
+    el.ondragstart = e => startDrag(e, card, el);
     el.ondragend = () => el.classList.remove('dragging');
 
     const title = document.createElement('div');
@@ -44,21 +65,8 @@ function renderCard(card) {
         return detail;
     });
 
-    if (card.subtasks.length) {
-        const toggle = document.createElement('span');
-        toggle.className = 'tog';
-        toggle.textContent = body.hidden ? '▸' : '▾';
-        toggle.onclick = () => {
-        body.hidden = !body.hidden;
-        toggle.textContent = body.hidden ? '▸' : '▾';
-        if (body.hidden) collapsed.add(card.text);
-        else collapsed.delete(card.text);
-        };
-        const doneCount = card.subtasks.filter(s => s.checked).length;
-        const count = document.createElement('span');
-        count.className = 'cnt';
-        count.textContent = ` (${doneCount}/${card.subtasks.length})`;
-        title.append(toggle, document.createTextNode(card.text), count);
+    if (card.subtasks.length) { // card has subtasks
+        renderSubtaskSection(card, body, title);
     } else {
         title.textContent = card.text;
     }
