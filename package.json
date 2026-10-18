@@ -1,8 +1,8 @@
 {
-  "name": "markdown-kanban",
-  "displayName": "Markdown Kanban",
+  "name": "listicle-markdown-kanban",
+  "displayName": "Listicle Markdown Kanban",
   "description": "Turn a checkbox section of a markdown file into a kanban board.",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "license": "MIT",
   "publisher": "local",
   "engines": { "vscode": "^1.80.0" },
@@ -11,8 +11,8 @@
   "contributes": {
     "commands": [
       {
-        "command": "markdownKanban.open",
-        "title": "Markdown Kanban: Open Board from Section"
+        "command": "ListicleMarkdownKanban.open",
+        "title": "Listicle Markdown Kanban: Open Board from Section"
       }
     ]
   }

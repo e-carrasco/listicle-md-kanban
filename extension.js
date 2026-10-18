@@ -4,7 +4,7 @@ const { listSections, parseSection } = require('./parser');
 
 function activate(context) {
     context.subscriptions.push(
-    vscode.commands.registerCommand('markdownKanban.open', async () => {
+    vscode.commands.registerCommand('ListicleMarkdownKanban.open', async () => {
         let doc = vscode.window.activeTextEditor?.document;
         if (!doc || doc.languageId !== 'markdown') {
         const [uri] =
