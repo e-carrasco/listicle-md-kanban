@@ -1,6 +1,6 @@
 # Markdown Kanban
 
-Turn a checkbox section of a markdown file into a kanban board inside VS Code.
+Turn a checkbox section of a markdown file into a kanban board inside VS Code to give a different perspective on how that list is progressing.
 
 ## Usage
 
