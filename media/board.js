@@ -70,7 +70,7 @@ function renderCard(card) {
     } else {
         title.textContent = card.text;
     }
-    if (badge) title.append(badge);
+    if (badge) title.prepend(badge); // floats must come first to sit at the top-right
     el.append(title, ...details, body);
     return el;
 }
