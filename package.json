@@ -2,7 +2,7 @@
   "name": "listicle-markdown-kanban",
   "displayName": "Listicle Markdown Kanban",
   "description": "Turn a checkbox section of a markdown file into a kanban board.",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "license": "MIT",
   "publisher": "local",
   "engines": { "vscode": "^1.80.0" },
