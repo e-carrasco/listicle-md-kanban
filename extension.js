@@ -4,46 +4,58 @@ const { listSections, parseSection } = require('./parser');
 
 function activate(context) {
     context.subscriptions.push(
-    vscode.commands.registerCommand('ListicleMarkdownKanban.open', async () => {
-        let doc = vscode.window.activeTextEditor?.document;
-        if (!doc || doc.languageId !== 'markdown') {
+    vscode.commands.registerCommand('ListicleMarkdownKanban.open', () => openMarkdownKanban(context))
+    );
+}
+
+async function openMarkdownKanban(context) {
+    let doc = vscode.window.activeTextEditor?.document;
+    if (!doc || doc.languageId !== 'markdown') {
         const [uri] =
             (await vscode.window.showOpenDialog({
-            filters: { Markdown: ['md', 'markdown'] },
-            canSelectMany: false,
+                filters: { Markdown: ['md', 'markdown'] },
+                canSelectMany: false,
             })) || [];
         if (!uri) return;
         doc = await vscode.workspace.openTextDocument(uri);
-        }
-        const sections = listSections(doc.getText().split(/\r?\n/));
-        if (!sections.length) {
+    }
+    const sections = listSections(doc.getText().split(/\r?\n/));
+    if (!sections.length) {
         vscode.window.showWarningMessage('No "## Title" sections found.');
         return;
-        }
-        const pick = await vscode.window.showQuickPick(
+    }
+    const pick = await vscode.window.showQuickPick(
         sections.map(s => s.title),
         { placeHolder: 'Which section should become a board?' }
-        );
-        if (!pick) return;
-        openBoard(context, doc, pick);
-    })
     );
+    if (!pick) {
+        return;
+    }
+    openBoard(context, doc, pick);
 }
 
 const COLUMN_MARKS = { todo: ' ', doing: '/', blocked: '!', done: 'x' };
 
 async function addCard(doc, title, column) {
     const text = await vscode.window.showInputBox({ prompt: 'New card text' });
-    if (!text || !text.trim()) return;
+    if (!text || !text.trim()) {
+        return;
+    }
     const lines = doc.getText().split(/\r?\n/);
     const sec = listSections(lines).find(section => section.title === title);
-    if (!sec) return;
+    if (!sec) {
+        return;
+    }
     let end = sec.line;
     let indent = null;
     for (let i = sec.line + 1; i < lines.length && !/^#{1,2}\s/.test(lines[i]); i++) {
-        if (lines[i].trim()) end = i;
+        if (lines[i].trim()) {
+            end = i;
+        }
         const m = /^(\s*)[-*+]\s+\[[ xX\/!]\]\s/.exec(lines[i]);
-        if (m && (indent === null || m[1].length < indent.length)) indent = m[1];
+        if (m && (indent === null || m[1].length < indent.length)) {
+            indent = m[1];
+        }
     }
     const newLine = `${indent || ''}- [${COLUMN_MARKS[column]}] ${text.trim()}`;
     const eol = doc.eol === vscode.EndOfLine.CRLF ? '\r\n' : '\n';

@@ -101,7 +101,7 @@ for (const id in titles) {
 
 let cards = [];
 
-function renderBoard() {
+function renderColumns() {
     for (const id in titles) {
         const col = document.getElementById(id);
         col.innerHTML = '';
@@ -115,6 +115,10 @@ function renderBoard() {
         heading.append(add);
         col.append(heading);
     }
+}
+
+function renderBoard() {
+    renderColumns();
     const rank = { high: 0, med: 1, low: 2 };
     const sorted = [...cards].sort((a, b) => (rank[a.priority] ?? 3) - (rank[b.priority] ?? 3));
     for (const card of sorted) {
