@@ -107,6 +107,12 @@ function renderBoard() {
         col.innerHTML = '';
         const heading = document.createElement('h2');
         heading.textContent = titles[id];
+        const add = document.createElement('button');
+        add.className = 'add';
+        add.textContent = '+';
+        add.title = 'Add card';
+        add.onclick = () => vscode.postMessage({ type: 'add', column: id });
+        heading.append(add);
         col.append(heading);
     }
     const rank = { high: 0, med: 1, low: 2 };

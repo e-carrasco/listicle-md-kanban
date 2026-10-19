@@ -32,7 +32,28 @@ function activate(context) {
 
 const COLUMN_MARKS = { todo: ' ', doing: '/', blocked: '!', done: 'x' };
 
-async function handleMessage(doc, msg) {
+async function addCard(doc, title, column) {
+    const text = await vscode.window.showInputBox({ prompt: 'New card text' });
+    if (!text || !text.trim()) return;
+    const lines = doc.getText().split(/\r?\n/);
+    const sec = listSections(lines).find(section => section.title === title);
+    if (!sec) return;
+    let end = sec.line;
+    let indent = null;
+    for (let i = sec.line + 1; i < lines.length && !/^#{1,2}\s/.test(lines[i]); i++) {
+        if (lines[i].trim()) end = i;
+        const m = /^(\s*)[-*+]\s+\[[ xX\/!]\]\s/.exec(lines[i]);
+        if (m && (indent === null || m[1].length < indent.length)) indent = m[1];
+    }
+    const newLine = `${indent || ''}- [${COLUMN_MARKS[column]}] ${text.trim()}`;
+    const eol = doc.eol === vscode.EndOfLine.CRLF ? '\r\n' : '\n';
+    const edit = new vscode.WorkspaceEdit();
+    edit.insert(doc.uri, doc.lineAt(end).range.end, eol + newLine);
+    await vscode.workspace.applyEdit(edit);
+}
+
+async function handleMessage(doc, msg, title) {
+    if (msg.type === 'add') return addCard(doc, title, msg.column);
     const edit = new vscode.WorkspaceEdit();
     const mark = (lineNumber, checkboxMark) => {
         const line = doc.lineAt(lineNumber);
@@ -66,7 +87,7 @@ function openBoard(context, doc, title) {
     };
     panel.webview.html = loadHtml(panel.webview, mediaRoot);
     panel.webview.onDidReceiveMessage(
-        msg => (msg.type === 'ready' ? render() : handleMessage(doc, msg)),
+        msg => (msg.type === 'ready' ? render() : handleMessage(doc, msg, title)),
         undefined,
         context.subscriptions
     );

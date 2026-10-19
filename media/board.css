@@ -88,3 +88,13 @@ body {
     margin: 4px 0 0 4px;
     display: block;
 }
+
+.col h2 { display: flex; justify-content: space-between; align-items: center; }
+.col h2 .add {
+    background: none;
+    border: none;
+    color: inherit;
+    font-size: 1.2em;
+    cursor: pointer;
+}
+.col h2 .add:hover { background: var(--vscode-toolbar-hoverBackground); }
