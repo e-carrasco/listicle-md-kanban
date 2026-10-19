@@ -52,6 +52,7 @@ body {
 }
 .card .t {
     font-weight: 600;
+    overflow: auto; /* contain the floated badge so content below moves down */
 }
 .done .t {
     text-decoration: line-through;
