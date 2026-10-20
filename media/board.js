@@ -1,6 +1,7 @@
 const vscode = acquireVsCodeApi();
 const titles = { todo: 'To Do', doing: 'In Progress', blocked: 'Blocked', done: 'Done' };
 const collapsed = new Set();
+const expandedDetails = new Set();
 const MAX_DETAIL_LENGTH = 80;
 let dragged = null;
 
@@ -60,8 +61,7 @@ function renderCard(card) {
     body.hidden = collapsed.has(card.text);
     card.subtasks.forEach(s => body.append(subtaskBox(s)));
     const fullDetailText = card.details.join(' | ');
-    const detailText = truncateDetail(fullDetailText);
-    const details = renderDetails(detailText, fullDetailText);
+    const details = renderDetails(card, fullDetailText);
 
     if (card.subtasks.length) { // card has subtasks
         renderSubtaskSection(card, body, title);
@@ -75,17 +75,41 @@ function renderCard(card) {
     return el;
 }
 
-function renderDetails(detailText, fullDetailText) {
-    if (!detailText) return [];
+function renderDetails(card, fullDetailText) {
+    if (!fullDetailText) {
+        return []
+    };
+
     const detail = document.createElement('div');
     detail.className = 'detail';
-    detail.textContent = detailText;
-    if (detailText !== fullDetailText) detail.title = fullDetailText;
+    const hasOverflow = fullDetailText.length > MAX_DETAIL_LENGTH;
+    const isExpanded = expandedDetails.has(card.line);
+
+    if (hasOverflow) {
+        const toggle = document.createElement('span');
+        toggle.className = 'tog';
+        toggle.textContent = isExpanded ? '▾' : '▸';
+        toggle.title = isExpanded ? 'Collapse details' : 'Expand details';
+        toggle.onclick = () => toggleDetails(card, isExpanded);
+        detail.append(toggle);
+    }
+    detail.append(document.createTextNode(
+        hasOverflow && !isExpanded ? truncateDetail(fullDetailText) : fullDetailText
+    ));
     return [detail];
 }
 
+function toggleDetails(card, isExpanded) {
+    if (isExpanded) {
+        expandedDetails.delete(card.line);
+    } else {
+        expandedDetails.add(card.line);
+    }
+    renderBoard();
+}
+
 function truncateDetail(text) {
-    if (text.length < MAX_DETAIL_LENGTH) {
+    if (text.length <= MAX_DETAIL_LENGTH) {
         return text;
     }
     
