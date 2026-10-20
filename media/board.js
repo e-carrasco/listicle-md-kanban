@@ -1,6 +1,7 @@
 const vscode = acquireVsCodeApi();
 const titles = { todo: 'To Do', doing: 'In Progress', blocked: 'Blocked', done: 'Done' };
 const collapsed = new Set();
+const MAX_DETAIL_LENGTH = 80;
 let dragged = null;
 
 function subtaskBox(item) {
@@ -58,21 +59,37 @@ function renderCard(card) {
     const body = document.createElement('div');
     body.hidden = collapsed.has(card.text);
     card.subtasks.forEach(s => body.append(subtaskBox(s)));
-    const details = card.details.map(text => {
-        const detail = document.createElement('div');
-        detail.className = 'detail';
-        detail.textContent = text;
-        return detail;
-    });
+    const fullDetailText = card.details.join(' | ');
+    const detailText = truncateDetail(fullDetailText);
+    const details = renderDetails(detailText, fullDetailText);
 
     if (card.subtasks.length) { // card has subtasks
         renderSubtaskSection(card, body, title);
     } else {
         title.textContent = card.text;
     }
-    if (badge) title.prepend(badge); // floats must come first to sit at the top-right
+    if (badge) { // floats must come first to sit at the top-right
+        title.prepend(badge);
+    } 
     el.append(title, ...details, body);
     return el;
+}
+
+function renderDetails(detailText, fullDetailText) {
+    if (!detailText) return [];
+    const detail = document.createElement('div');
+    detail.className = 'detail';
+    detail.textContent = detailText;
+    if (detailText !== fullDetailText) detail.title = fullDetailText;
+    return [detail];
+}
+
+function truncateDetail(text) {
+    if (text.length < MAX_DETAIL_LENGTH) {
+        return text;
+    }
+    
+    return text.slice(0, MAX_DETAIL_LENGTH - 3).trimEnd() + '...';
 }
 
 for (const id in titles) {
